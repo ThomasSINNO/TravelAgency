@@ -1,0 +1,53 @@
+{% extends 'agvoybase.html.twig' %}
+
+{% block main %}
+    <h1>Nos circuits</h1>
+    <table>
+        <thead>
+            <tr>
+            	<th>ID </th>
+                <th>Nom </th>
+                <th>Pays de depart </th>
+                <th>Ville de depart </th>
+                <th>Ville d'arrivee </th>
+                <th>Duree du circuit </th>
+                <th>Actions </th>
+            </tr>
+        </thead>
+        (Note au correcteur : un seul circuit est encore disponible (sa date de départ > aujourd'hui) l'italie,
+        et il ne le sera que jusqu'au 21 octobre soit samedi (je ne sais pas si c'est jusqu'au 20 23h59 ou 21 23H59)
+        donc suivant la date à laquelle vous corrigez, et à moins d'ajouter des entrées dans la base il n'y 
+        aura plus rien d'affiché ici )
+        <br>
+        <tbody>
+        {% for circuit in circuits %} 
+         {% set foo = true %}       
+          {% for prog in circuit.programmations %}              
+                {% if prog.dateDepart|date('U') > "now"|date('U') %} {# on n'affiche que si le 
+                prochain depart est après la date d'aujourdhui ici il n'y a que l'italie et plus pour longtemps #}
+                	{% if foo %} {# On verifie que l'on affiche qu'une seule fois chaque circuit,
+                	 meme s'il y a plusieurs programmations dans le futur pour lui#}
+                        {% set foo = false %} 
+                  		<tr>
+                			<td><a href="{{ path('circuit_show', { 'id': circuit.id }) }}">{{ circuit.id }}</a></td>
+     	           			<td>{{ circuit.description }}</td>
+        		        	<td>{{ circuit.paysDepart }}</td>
+                			<td>{{ circuit.villeDepart }}</td>
+               			 	<td>{{ circuit.villeArrivee }}</td>
+                			<td>{{ circuit.dureeCircuit }}</td>
+                			<td>
+                  		  		<ul>
+                        			<li>
+                            			<a href="{{ path('circuit_show', { 'id': circuit.id }) }}">détails</a>
+                        			</li>
+                   				</ul>
+                			</td>
+            	  		</tr>
+            	  	{% endif %}
+                {% endif %}
+          {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+    
+{% endblock %} {# main #}
